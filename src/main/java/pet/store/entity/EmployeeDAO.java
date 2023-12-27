@@ -11,13 +11,14 @@ import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import pet.store.entity.PetStoreDAO.PetStore;
 
 //add jakarta and lombok class-level annotations
 @Entity
 @Data
 @ToString(exclude = "petStore")
 @EqualsAndHashCode(exclude = "petStore")
-public class Employee {
+public class EmployeeDAO {
 	
 	// define the primary key using @Id
 	

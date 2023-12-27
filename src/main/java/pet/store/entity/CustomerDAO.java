@@ -12,13 +12,14 @@ import jakarta.persistence.ManyToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import pet.store.entity.PetStoreDAO.PetStore;
 
 //add jakarta and lombok class-level annotations
-@Entity
 @Data
+@Entity
 @EqualsAndHashCode(exclude = "petStores")
 @ToString(exclude = "petStores")
-public class Customer {
+public class CustomerDAO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
