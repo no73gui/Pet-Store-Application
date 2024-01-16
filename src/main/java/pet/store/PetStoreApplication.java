@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PetStoreApplication {
 
 	public static void main(String[] args) {
-		
+
 		// start spring boot application using .run.
 		SpringApplication.run(PetStoreApplication.class, args);
 

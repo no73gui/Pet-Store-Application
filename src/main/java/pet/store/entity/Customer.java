@@ -12,27 +12,26 @@ import jakarta.persistence.ManyToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import pet.store.entity.PetStoreDAO.PetStore;
 
 //add jakarta and lombok class-level annotations
 @Data
 @Entity
-@EqualsAndHashCode(exclude = "petStores")
-@ToString(exclude = "petStores")
-public class CustomerDAO {
-	
+public class Customer {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long customerId;
-	
+
 	@Column(name = "customerFirstName")
 	private String customerFirstName;
 	@Column(name = "customerLastName")
 	private String customerLastName;
 	@Column(name = "customerEmail")
 	private String customerEmail;
-	
+
 	// map relationship to other entities.
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
 	@ManyToMany(mappedBy = "customers", cascade = CascadeType.PERSIST)
 	private Set<PetStore> petStores;
 

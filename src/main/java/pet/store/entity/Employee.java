@@ -11,41 +11,40 @@ import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import pet.store.entity.PetStoreDAO.PetStore;
 
 //add jakarta and lombok class-level annotations
-@Entity
 @Data
 @ToString(exclude = "petStore")
 @EqualsAndHashCode(exclude = "petStore")
-public class EmployeeDAO {
-	
+@Entity
+public class Employee {
+
 	// define the primary key using @Id
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long employee_id;
-	
-	@Column(name = "employeeFirstName")
+
+	@Column(name = "employee_first_name")
 	private String employeeFirstName;
-		
-	@Column(name = "employeeLastName")
+
+	@Column(name = "employee_last_name")
 	private String employeeLastName;
-	
-	@Column(name = "employeePhone")
+
+	@Column(name = "employee_phone")
 	private Long employeePhone;
-	
-	@Column(name = "employeeTitle")
+
+	@Column(name = "employee_title")
 	private String jobTitle;
-	
+
 	// many employees can work at one pet store. Use @ManyToOne to define entity relationship. Use @JoinColumn(name = ...) to define the column of commonality to join data.
 	// define entity relationship. cascadetype.all for cascade on delete.
 	// the joincolumn will join the id data from petStore
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "petStoreId")
+	@JoinColumn(name = "petStore")
 	private PetStore petStore;
-	
-	
-	
+
+
+
 
 }
