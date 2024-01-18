@@ -2,9 +2,9 @@ package pet.store.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import pet.store.controller.model.PetStoreData.CustomerData;
 import pet.store.dao.CustomerDao;
 import pet.store.entity.Customer;
@@ -18,22 +18,25 @@ public class CustomerService {
 	@Autowired
 	private CustMapperImpl mapper;
 
-	public CustomerData find(Long customerId) {
+	@Transactional(readOnly = true)
+	public CustomerData find(Long customerId) throws EntityNotFoundException {
 		boolean exists = dao.existsById(customerId);
 		if (exists) {
-			return mapper.customerToCustomerData(dao.getReferenceById(customerId));
+			return mapper.customerToCustomerData(dao.findById(customerId).orElseThrow());
 
 		} else {
-			return null;
+			throw new EntityNotFoundException();
 		}
 	}
 
+	@Transactional(readOnly = false)
 	public CustomerData create() {
 		Customer c = new Customer();
 		dao.save(c);
 		return mapper.customerToCustomerData(c);
 	}
 
+	@Transactional(readOnly = false)
 	public CustomerData update(Long customerId, CustomerData updatedCustomer) {
 
 		if (customerId != null) {
@@ -65,17 +68,19 @@ public class CustomerService {
 
 	}
 
+	@Transactional(readOnly = false)
 	public CustomerData delete(Long custId) {
 
 		if (dao.existsById(custId)) {
-			// Customer c = dao.getReferenceById(custId);
-			// dao.delete(c);
-			dao.deleteById(custId);
+			Customer c = dao.findById(custId).orElseThrow();
+			dao.delete(c);
+
+			dao.save(c);
+			return mapper.customerToCustomerData(c);
 
 		} else {
 			throw new EntityNotFoundException("Customer with ID " + custId + " does not exist.");
 		}
-		return null;
 	}
 
 }

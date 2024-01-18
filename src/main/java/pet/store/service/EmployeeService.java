@@ -1,8 +1,12 @@
 package pet.store.service;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import pet.store.controller.model.PetStoreData.EmployeeData;
 import pet.store.dao.EmployeeDao;
 import pet.store.entity.Employee;
@@ -15,39 +19,40 @@ public class EmployeeService {
 
 	@Autowired
 	private EmpMapperImpl mapper;
-
+	
+	@Transactional(readOnly=false)
 	public EmployeeData save(Employee emp) {
-		boolean exists = dao.existsById(emp.getEmployee_id());
-		if (exists) {
-			dao.save(emp);
-			return mapper.employeeToEmployeeData(emp);
-		} else if (!exists) {
-			Employee nEmp = new Employee();
-			dao.save(nEmp);
-			return mapper.employeeToEmployeeData(nEmp);
+		if(dao.existsById(emp.getEmployee_id())) {
+			Employee e = dao.getReferenceById(emp.getEmployee_id());
+			dao.save(e);
+			return mapper.employeeToEmployeeData(e);
 		}
-		return mapper.employeeToEmployeeData(emp);
-
+		else {
+			Employee e = new Employee();
+			dao.save(e);
+			return mapper.employeeToEmployeeData(e);
+		}
 		// log the HTTP request parameterized. in parameter, return the DTOPetStoreData
 		// object from the body.
 	}
 
-	public EmployeeData find(Long employeeId) {
-		boolean exists = dao.existsById(employeeId);
-		if(exists) {
+	@Transactional(readOnly=true)
+	public EmployeeData find(Long employeeId, Long petStoreId) throws NoSuchElementException {
+		boolean empexists = dao.existsById(employeeId);
+		if(empexists) {
 			return mapper.employeeToEmployeeData(dao.getReferenceById(employeeId));
 		}
 		else {
-			return null;
+			throw new EntityNotFoundException();
 		}
 	}
-
+	@Transactional(readOnly=false)
 	public EmployeeData update(
 			Long employeeId,
 			String firstName,
 			String lastName,
 			Long phone,
-			String jobTitle) {
+			String jobTitle) throws EntityNotFoundException {
 
 		if (dao.existsById(employeeId)) {
 			Employee emp = dao.getReferenceById(employeeId);
@@ -55,16 +60,24 @@ public class EmployeeService {
 			emp.setEmployeeLastName(lastName);
 			emp.setEmployeePhone(phone);
 			emp.setJobTitle(jobTitle);
+			return mapper.employeeToEmployeeData(dao.getReferenceById(employeeId));
+		} else {
+			throw new EntityNotFoundException();
 		}
-		return mapper.employeeToEmployeeData(dao.getReferenceById(employeeId));
 	}
-
-	public EmployeeData delete(Long employeeId) {
+	@Transactional(readOnly=false)
+	public EmployeeData delete(Long employeeId) throws EntityNotFoundException {
 		if (dao.existsById(employeeId)) {
-			dao.deleteById(employeeId);
+			Employee e = dao.getReferenceById(employeeId);
+			dao.delete(e);
+			dao.save(e);
+			return mapper.employeeToEmployeeData(dao.getReferenceById(employeeId));
+		}
+		else {
+			throw new EntityNotFoundException();
 		}
 
-		return mapper.employeeToEmployeeData(dao.getReferenceById(employeeId));
 	}
+	
 
 }

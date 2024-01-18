@@ -2,14 +2,17 @@
 package pet.store.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import pet.store.controller.model.PetStoreData;
 import pet.store.dao.PetStoreDao;
 import pet.store.entity.PetStore;
 import pet.store.service.mapper.PetStoreMapper;
 
+@Slf4j
 // class-level annotations @Service to denote service class/
 @Service
 public class PetStoreService {
@@ -23,53 +26,67 @@ public class PetStoreService {
 	private PetStoreMapper mapper;
 	// 5. create savePetStoreData method that takes a PetStoreData object. Names
 	// modified
-	public PetStoreData save(Long petStoreId, PetStore ps) {
+
+	@Transactional(readOnly = false)
+	public PetStoreData save() {
 		// 5a. This method call will return a DTOPetStoreData if the pet store id is
 		// null.
 		// if the petStoreId is not null, the method should call findPetStoreById, which
 		// will return a PetStoreDAO object if PetStore has has a matching id.
 
 		// retrieve the id of petStoreData
-		boolean exists = dao.existsById(petStoreId);
-		if (exists) {
-			PetStore nps = dao.getReferenceById(petStoreId);
-			dao.save(nps);
-		} else {
-			PetStore nps = new PetStore();
-			dao.save(nps);
-		}
-		ResponseEntity<String> response = ResponseEntity.ok("Employee Saved Successfully.");
-		System.out.println(response);
+		PetStore ps = new PetStore();
+		dao.save(ps);
+		log.info("POST request recieved. New Pet Store Object created in datasource with ID: {}", ps.getPetStoreId());
 		return mapper.petStoreToPetStoreData(ps);
 	}
 
-
-
-
 	public PetStoreData find(Long petStoreId) {
-
-		PetStore petStore = dao.getReferenceById(petStoreId);
-		return mapper.petStoreToPetStoreData(petStore);
+		if (dao.existsById(petStoreId)) {
+			PetStore ps = dao.getReferenceById(petStoreId);
+			log.info("GET request recvieved for existing Pet Store with ID : {} ", petStoreId);
+			return mapper.petStoreToPetStoreData(ps);
+		} else {
+			log.warn("GET request recieved for Pet Store with ID {} could not be processed.", petStoreId);
+			throw new EntityNotFoundException();
+		}
 
 	}
 
-	public PetStoreData update(Long petStoreId, String petStoreName,
-			String phone) {
-		if(dao.existsById(petStoreId)) {
+	@Transactional
+	public PetStoreData update(Long petStoreId, String petStoreName, String phone) {
+		if(petStoreId != null) {
+			if(dao.existsById(petStoreId)) {
 			PetStore ps = dao.getReferenceById(petStoreId);
+			// Entity with petStoreId exists in the database
 			ps.setPetStoreName(petStoreName);
 			ps.setPetStorePhone(phone);
-		dao.save(ps);
+			dao.save(ps);
+			
+			log.info("Pet Store {} updated in datasource.");
+
+			return mapper.petStoreToPetStoreData(ps);
+			} else {
+				throw new EntityNotFoundException("Pet Store With ID : " + petStoreId + " was not found in the datasource.");
+			}
+		
+		} else {
+			throw new IllegalArgumentException("ID Must not be null!");
 		}
-		return mapper.petStoreToPetStoreData(dao.getReferenceById(petStoreId));
 
 	}
 
+	@Transactional
 	public PetStoreData delete(Long petStoreId) {
-		if(dao.existsById(petStoreId)) {
-			dao.deleteById(petStoreId);
+
+		if (petStoreId != null) {
+			PetStore ps = dao.findById(petStoreId).orElseThrow();
+			dao.delete(ps);
+			dao.save(ps);
+			log.info("Pet Store {} deleted from datasource.", ps);
 		}
-		return mapper.petStoreToPetStoreData(dao.getReferenceById(petStoreId));
+		return mapper.petStoreToPetStoreData(dao.findById(petStoreId).orElseThrow());
+
 	}
 
 }

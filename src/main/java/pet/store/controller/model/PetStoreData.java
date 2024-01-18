@@ -13,24 +13,31 @@ import pet.store.entity.PetStore;
 @Data
 @NoArgsConstructor
 public class PetStoreData {
-	//1d. i i i.  Lombok class-level annotations
+	// 1d. i i i. Lombok class-level annotations
 	@NoArgsConstructor
 	@Data
 	public static class EmployeeData {
-		// 1d. i i. copy exact fields from Employee.java entity, exclude JPA annotations.
-			private Long employee_id;
+		// 1d. i i. copy exact fields from Employee.java entity, exclude JPA
+		// annotations.
+		private Long employee_id;
 
-			private String employeeFirstName;
+		private String employeeFirstName;
 
-			private String employeeLastName;
+		private String employeeLastName;
 
-			private Long employeePhone;
+		private Long employeePhone;
 
-			private String jobTitle;
+		private String jobTitle;
 
-			// ignore petStore Set for sake of JPA recursion requirements
+		public EmployeeData(Employee e) {
+			this.employee_id = e.getEmployee_id();
+			this.employeeFirstName = e.getEmployeeFirstName();
+			this.employeeLastName = e.getEmployeeLastName();
+			this.employeePhone = e.getEmployeePhone();
+			this.jobTitle = e.getJobTitle();
+		}
 
-
+		// ignore petStore Set for sake of JPA recursion requirements
 
 	}
 
@@ -46,6 +53,13 @@ public class PetStoreData {
 		private String customerFirstName;
 		private String customerLastName;
 		private String customerEmail;
+
+		public CustomerData(Customer c) {
+			this.customerId = c.getCustomerId();
+			this.customerFirstName = c.getCustomerFirstName();
+			this.customerLastName = c.getCustomerLastName();
+			this.customerEmail = c.getCustomerEmail();
+		}
 
 		// exclude petStore Set field for sake of JPA recursion requirements.
 	}
@@ -85,10 +99,10 @@ public class PetStoreData {
 
 }
 
-	// the PetStore entity returns a set of data for employee and customer. Because
-	// there is multiple values being returned in a set,
-	// a for loop needs to be used to add all of the data to this object, because
-	// this DTO is what the API will respond with.
+// the PetStore entity returns a set of data for employee and customer. Because
+// there is multiple values being returned in a set,
+// a for loop needs to be used to add all of the data to this object, because
+// this DTO is what the API will respond with.
 
 //	public DTOPetStoreData(PetStoreDAO ps) {
 //		this.petStoreId = ps.getPetStoreId();
@@ -100,11 +114,8 @@ public class PetStoreData {
 //		this.petStorePhone= ps.getPetStorePhone();
 //		//return a set of customers from CustomerDAO.
 //		this.customers = ps.populateEmp(ps);
-	// use a for loop to return the Set of employees FROM the Employee entity --
-	// EmployeeDAO ---. for each object returned from
-	// the entity, the for loop will iterate through the Set of data from the
-	// employee entity.
+// use a for loop to return the Set of employees FROM the Employee entity --
+// EmployeeDAO ---. for each object returned from
+// the entity, the for loop will iterate through the Set of data from the
+// employee entity.
 //		for(EmployeeDAO employee : ps.getEmployees()) {
-
-
-

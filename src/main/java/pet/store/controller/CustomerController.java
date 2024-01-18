@@ -38,7 +38,7 @@ public class CustomerController {
 
 	}
 
-	@GetMapping("/check/{customerId}")
+	@GetMapping("/check/customer/{customerId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public CustomerData find(@PathVariable @RequestBody Long customerId) {
@@ -53,10 +53,10 @@ public class CustomerController {
 		return cS.update(customerId, updatedCustomer);
 	}
 
-	@DeleteMapping("/delete/{customerId}")
+	@DeleteMapping("/delete/customer/{customerId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public CustomerData delete(@PathVariable @RequestBody Long custId) {
+	public CustomerData delete(@PathVariable Long custId) {
 		return cS.delete(custId);
 	}
 }

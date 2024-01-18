@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.extern.slf4j.Slf4j;
 import pet.store.controller.model.PetStoreData;
-import pet.store.entity.PetStore;
 import pet.store.service.PetStoreService;
 
 // 4a. i. add @RestController as class-level. this tells Spring that this is a REST controller. It expects and returns JSON in the request/response bodies.
@@ -26,7 +24,8 @@ import pet.store.service.PetStoreService;
 
 // 4a. iii. add @Slf4j as class-level. tells lombok to create slf4j logger. It adds a logger as an instance variable named log.
 // used log.info("Line in log")
-@Slf4j
+
+//@Slf4j
 
 public class PetStoreController {
 
@@ -36,19 +35,18 @@ public class PetStoreController {
 	// 4c. create public method that maps an HTTP POST request to "/pet_store". Response should be 201 (created).
 	// pass the contents of the request body as a parameter
 
-	@PostMapping("/create/pet_store")
+	@PostMapping("/create/pet-store")
 	@ResponseStatus(HttpStatus.CREATED)
-	public PetStoreData save(@PathVariable Long petStoreId , @RequestBody PetStore ps) {
+	public PetStoreData save() {
 
 		// log the HTTP request parameterized. in parameter, return the DTOPetStoreData object from the body.
-		log.info("Recieved POST request for PetStore: {}", ps.getPetStoreId());
-		return pSS.save(petStoreId, ps);
+		return pSS.save();
 
 	}
 
 
 
-	@GetMapping("/check/{petStoreId}")
+	@GetMapping("/check/pet-store/{petStoreId}")
 	@ResponseStatus(HttpStatus.OK)
 	public PetStoreData find(@PathVariable @RequestBody Long petStoreId) {
 		return pSS.find(petStoreId);
@@ -56,17 +54,16 @@ public class PetStoreController {
 
 
 
-	@PutMapping("/update/{petStoreId}")
+	@PutMapping("/update/pet-store/{petStoreId}")
 	@ResponseStatus(HttpStatus.OK)
-	public PetStoreData update(@PathVariable @RequestBody Long petStoreId,
+	public PetStoreData update(@PathVariable Long petStoreId,
 			String petStoreName, String petStorePhone) {
-		pSS.update(petStoreId, petStoreName, petStorePhone);
 		return pSS.update(petStoreId, petStoreName, petStorePhone);
 	}
 
-	@DeleteMapping("/delete/{petStoreId}")
+	@DeleteMapping("/delete/pet-store/{petStoreId}")
 	@ResponseStatus(HttpStatus.OK)
-	public PetStoreData delete(@PathVariable @RequestBody Long petStoreId){
+	public PetStoreData delete(@PathVariable Long petStoreId){
 		return pSS.delete(petStoreId);
 	}
 

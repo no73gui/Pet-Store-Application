@@ -27,17 +27,17 @@ public class PetStore {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long petStoreId;
 
-	@Column(name = "petStoreName")
+	@Column(name = "pet_store_name")
 	private String petStoreName;
-	@Column(name = "petStoreAddress")
+	@Column(name = "pet_store_address")
 	private String petStoreAddress;
-	@Column(name = "petStoreCity")
+	@Column(name = "pet_store_city")
 	private String petStoreCity;
-	@Column(name = "petStroeState")
+	@Column(name = "pet_store_state")
 	private String petStoreState;
-	@Column(name = "petStoreZipCode")
+	@Column(name = "pet_store_zip_code")
 	private String petStoreZip;
-	@Column(name = "petStorePhone")
+	@Column(name = "pet_store_phone")
 	private String petStorePhone;
 
 	// implement jakarta persistence.

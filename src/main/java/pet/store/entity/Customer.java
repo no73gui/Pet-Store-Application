@@ -22,11 +22,11 @@ public class Customer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long customerId;
 
-	@Column(name = "customerFirstName")
+	@Column(name = "customer_first_name")
 	private String customerFirstName;
-	@Column(name = "customerLastName")
+	@Column(name = "customer_last_name")
 	private String customerLastName;
-	@Column(name = "customerEmail")
+	@Column(name = "customer_email")
 	private String customerEmail;
 
 	// map relationship to other entities.

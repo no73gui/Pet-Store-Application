@@ -17,7 +17,7 @@ import pet.store.entity.Employee;
 import pet.store.service.EmployeeService;
 
 @RestController
-@RequestMapping("/employee")
+@RequestMapping("/pet_store")
 public class EmployeeController {
 
 	@Autowired
@@ -26,7 +26,7 @@ public class EmployeeController {
 	// Response should be 201 (created).
 	// pass the contents of the request body as a parameter
 
-	@PostMapping("/create")
+	@PostMapping("/create/employee")
 	@ResponseStatus(HttpStatus.CREATED)
 	public EmployeeData save(@RequestBody Employee emp) {
 
@@ -37,20 +37,20 @@ public class EmployeeController {
 
 	}
 
-	@GetMapping("/check/{petStoreId}")
+	@GetMapping("/check/employee/{employeeId}")
 	@ResponseStatus(HttpStatus.OK)
-	public EmployeeData find(@PathVariable @RequestBody Long petStoreId) {
-		return eS.find(petStoreId);
+	public EmployeeData find(@PathVariable @RequestBody Long petStoreId, Long employeeId) {
+		return eS.find(petStoreId, employeeId);
 	}
 
-	@PutMapping("/update/{petStoreId}")
+	@PutMapping("/update/employee/{employeeId}")
 	@ResponseStatus(HttpStatus.OK)
 	public EmployeeData update(@PathVariable @RequestBody Long employeeId, String empFirstName, String empLastName,
 			Long empPhone, String jobTitle) {
 		return eS.update(employeeId, empFirstName, empLastName, empPhone, jobTitle);
 	}
 
-	@DeleteMapping("/delete/{petStoreId}")
+	@DeleteMapping("/delete/employee/{employeeId}")
 	@ResponseStatus(HttpStatus.OK)
 	public EmployeeData delete(@PathVariable @RequestBody Long empId) {
 		return eS.delete(empId);
